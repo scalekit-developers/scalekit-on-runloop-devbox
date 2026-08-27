@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scalekit × Runloop</title>
+  <style>
+    :root { color-scheme: light; font-family: ui-sans-serif, system-ui, sans-serif; }
+    body { max-width: 44rem; margin: 2.5rem auto; padding: 0 1.25rem; line-height: 1.45; }
+    h1 { font-size: 1.6rem; margin: 0 0 0.35rem; }
+    .sub { color: #444; margin: 0 0 1.5rem; }
+    section { border: 1px solid #ddd; border-radius: 12px; padding: 1rem 1.1rem; margin: 0 0 1rem; }
+    button, a.btn {
+      display: inline-block;
+      background: #111;
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 0.55rem 0.9rem;
+      font: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #status { font-weight: 600; }
+    pre {
+      white-space: pre-wrap;
+      background: #f6f6f4;
+      border-radius: 8px;
+      padding: 0.8rem;
+      min-height: 8rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Scalekit × Runloop</h1>
+  <p class="sub">Connect GitHub once. Run starts a Devbox. Claude Code calls Virtual MCP. No MCP Hub.</p>
+
+  <section>
+    <p id="status">Checking…</p>
+    <p>
+      <a class="btn" id="connect" hidden href="#" target="_blank" rel="noreferrer">Connect GitHub</a>
+      <button type="button" id="refresh">Refresh status</button>
+    </p>
+  </section>
+
+  <section>
+    <p><button type="button" id="run" disabled>Run — summarize my last PR</button></p>
+    <pre id="out">Output appears here.</pre>
+  </section>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const connectEl = document.getElementById('connect');
+    const runEl = document.getElementById('run');
+    const outEl = document.getElementById('out');
+
+    async function loadStatus() {
+      const res = await fetch('/api/status');
+      const data = await res.json();
+      if (!res.ok) {
+        statusEl.textContent = data.error || 'Status failed';
+        runEl.disabled = true;
+        connectEl.hidden = true;
+        return;
+      }
+      if (data.state === 'ready') {
+        statusEl.textContent = 'GitHub is connected. Ready to run.';
+        connectEl.hidden = true;
+        runEl.disabled = false;
+        return;
+      }
+      runEl.disabled = true;
+      if (data.state === 'needs_auth' && data.authLink) {
+        statusEl.textContent = 'GitHub needs authorization.';
+        connectEl.hidden = false;
+        connectEl.href = data.authLink;
+        return;
+      }
+      statusEl.textContent = 'No GitHub connected account. Check SCALEKIT_MCP_CONFIG_ID and GITHUB_CONNECTION_NAME.';
+      connectEl.hidden = true;
+    }
+
+    async function run() {
+      runEl.disabled = true;
+      outEl.textContent = '';
+      const res = await fetch('/api/run', { method: 'POST' });
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const chunks = buffer.split('\n\n');
+        buffer = chunks.pop() || '';
+        for (const chunk of chunks) {
+          const line = chunk.replace(/^data: /, '');
+          if (!line) continue;
+          const event = JSON.parse(line);
+          if (event.type === 'log') {
+            outEl.textContent += event.text + '\n';
+          } else if (event.type === 'done') {
+            outEl.textContent += '\n---\n' + event.text + '\n';
+          } else if (event.type === 'error') {
+            outEl.textContent += '\nError: ' + event.text + '\n';
+          }
+        }
+      }
+      runEl.disabled = false;
+      await loadStatus();
+    }
+
+    document.getElementById('refresh').addEventListener('click', loadStatus);
+    runEl.addEventListener('click', run);
+    loadStatus();
+  </script>
+</body>
+</html>

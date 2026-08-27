@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Two helpers</title>
+  <style>
+    :root {
+      --ink: #1a1408;
+      --paper: #fff8e8;
+      --hub: #f4a259;
+      --vmcp: #5b8def;
+      --box: #7dcfb6;
+      --gh: #e07a5f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-rounded, "Nunito", "Avenir Next", system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 2rem 1.25rem 4rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      line-height: 1.1;
+      margin: 0 0 0.4rem;
+    }
+    .sub {
+      text-align: center;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      margin: 0 0 2.5rem;
+      opacity: 0.75;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      max-width: 1100px;
+      margin: 0 auto 2.5rem;
+      align-items: stretch;
+    }
+    @media (max-width: 800px) {
+      .row { grid-template-columns: 1fr 1fr; }
+    }
+    .card {
+      background: #fff;
+      border-radius: 28px;
+      padding: 1.25rem 1rem 1.4rem;
+      text-align: center;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.08);
+      border: 4px solid var(--ink);
+    }
+    .pic {
+      font-size: 4.4rem;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .card h2 {
+      font-size: 1.35rem;
+      margin: 0 0 0.35rem;
+    }
+    .card p {
+      font-size: 1.15rem;
+      margin: 0;
+      line-height: 1.25;
+    }
+    .arrow-row {
+      display: none;
+    }
+    .swap {
+      max-width: 720px;
+      margin: 0 auto 2rem;
+      background: #fff;
+      border: 4px solid var(--ink);
+      border-radius: 28px;
+      padding: 1.4rem 1.5rem;
+    }
+    .swap h2 {
+      margin: 0 0 1rem;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+    .hop {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0.65rem 0;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 3px solid var(--ink);
+      font-size: 1.05rem;
+    }
+    .hub { background: var(--hub); }
+    .vmcp { background: var(--vmcp); color: #fff; }
+    .room { background: var(--box); }
+    .store { background: var(--gh); color: #fff; }
+    .tiny {
+      text-align: center;
+      font-size: 1.25rem;
+      max-width: 640px;
+      margin: 0 auto;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <h1>Two helpers.<br>Not the same job.</h1>
+  <p class="sub">The robot is in a hotel room.</p>
+
+  <div class="row">
+    <article class="card">
+      <div class="pic">🏨</div>
+      <h2>The room</h2>
+      <p>The robot works here.<br>It only has a <b>room key</b>.</p>
+    </article>
+    <article class="card">
+      <div class="pic">🛎️</div>
+      <h2>Front desk</h2>
+      <p>That is <b>MCP Hub</b>.<br>It takes the room key.</p>
+    </article>
+    <article class="card">
+      <div class="pic">🏦</div>
+      <h2>The bank</h2>
+      <p>That is <b>Virtual MCP</b>.<br>It knows it is <b>you</b>.</p>
+    </article>
+    <article class="card">
+      <div class="pic">🍪</div>
+      <h2>The cookie jar</h2>
+      <p>That is <b>GitHub</b>.<br>Your cookies live here.</p>
+    </article>
+  </div>
+
+  <div class="swap">
+    <h2>The robot asks for a cookie</h2>
+    <div class="hop"><span class="badge room">Room</span> shows a room key → <span class="badge hub">Desk</span></div>
+    <div class="hop"><span class="badge hub">Desk</span> trades it for a bank note → <span class="badge vmcp">Bank</span></div>
+    <div class="hop"><span class="badge vmcp">Bank</span> opens <b>your</b> jar → <span class="badge store">Cookies</span></div>
+  </div>
+
+  <p class="tiny">
+    The desk does not know your name.<br>
+    The bank does not sit in the room.<br>
+    The robot never holds the jar key.
+  </p>
+</body>
+</html>
