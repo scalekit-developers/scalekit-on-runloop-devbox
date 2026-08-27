@@ -5,6 +5,7 @@ const run = {
   mcpUrl: 'https://example.scalekit.com/mcp/v3/servers/abc',
   sessionToken: 'session_test_token',
   anthropicApiKey: 'sk-ant-test',
+  model: 'claude-sonnet-4-6',
 };
 
 describe('buildClaudeScript', () => {
@@ -38,6 +39,7 @@ describe('buildClaudeScript', () => {
     expect(script).toContain('claude -p');
     expect(script).not.toContain('how you collected');
     expect(script).not.toContain('npm install');
+    expect(script).toContain("--model 'claude-sonnet-4-6'");
   });
 });
 

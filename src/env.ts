@@ -10,6 +10,7 @@ export type AppEnv = {
   runloopApiKey: string;
   anthropicApiKey: string;
   anthropicBaseUrl: string;
+  model: string;
 };
 
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
@@ -51,5 +52,6 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     runloopApiKey: source.RUNLOOP_API_KEY!,
     anthropicApiKey,
     anthropicBaseUrl,
+    model: source.CLAUDE_MODEL?.trim() || source.ANTHROPIC_MODEL?.trim() || 'claude-sonnet-4-6',
   };
 }

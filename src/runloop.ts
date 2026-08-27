@@ -31,6 +31,7 @@ export async function runAgentInDevbox(
         sessionToken: input.sessionToken,
         anthropicApiKey: input.anthropicApiKey,
         anthropicBaseUrl: input.anthropicBaseUrl,
+        model: input.model,
       }),
       input.onLog,
     );

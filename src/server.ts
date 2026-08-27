@@ -60,6 +60,7 @@ app.post('/api/run', async (_req, res) => {
       sessionToken: token,
       anthropicApiKey: env.anthropicApiKey,
       anthropicBaseUrl: env.anthropicBaseUrl,
+      model: env.model,
       onLog: (text) => send({ type: 'log', text }),
     });
 
