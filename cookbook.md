@@ -125,6 +125,8 @@ npm run dev
 
 The hop rail lights up as logs arrive: Browser → Scalekit → Devbox → GitHub.
 
+![Local demo page with GitHub connected and a run in progress](docs/images/demo-connected.png)
+
 ## What a successful run looks like
 
 | Check | Pass |
@@ -135,6 +137,10 @@ The hop rail lights up as logs arrive: Browser → Scalekit → Devbox → GitHu
 | Mid logs | Creating Devbox, install, Claude Code |
 | Final block | Two or three sentences about your last PR |
 | End | Devbox shuts down |
+
+The same run on the Runloop dashboard. Command logs show the Virtual MCP registration and the two-sentence PR summary. The Devbox then shuts down.
+
+![Runloop Devbox after a successful run, with the PR summary in the command log](docs/images/runloop-devbox.png)
 
 ## How a tool call travels
 
