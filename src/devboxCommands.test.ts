@@ -23,6 +23,16 @@ describe('buildClaudeScript', () => {
     expect(script).toContain('Authorization: Bearer session_test_token');
   });
 
+  it('points Claude Code at LiteLLM when a base URL is set', () => {
+    const viaLiteLlm = buildClaudeScript({
+      ...run,
+      anthropicBaseUrl: 'https://llm.example.com',
+    });
+    expect(viaLiteLlm).toContain("ANTHROPIC_BASE_URL='https://llm.example.com'");
+    expect(viaLiteLlm).toContain("ANTHROPIC_AUTH_TOKEN='sk-ant-test'");
+    expect(viaLiteLlm).not.toContain('ANTHROPIC_API_KEY=');
+  });
+
   it('asks Claude Code to summarize the last pull request', () => {
     expect(script).toContain(AGENT_PROMPT);
     expect(script).toContain('claude -p');

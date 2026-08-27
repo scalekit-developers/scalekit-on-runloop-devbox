@@ -59,6 +59,7 @@ app.post('/api/run', async (_req, res) => {
       mcpUrl: mcpServerUrl,
       sessionToken: token,
       anthropicApiKey: env.anthropicApiKey,
+      anthropicBaseUrl: env.anthropicBaseUrl,
       onLog: (text) => send({ type: 'log', text }),
     });
 

@@ -30,6 +30,7 @@ export async function runAgentInDevbox(
         mcpUrl: input.mcpUrl,
         sessionToken: input.sessionToken,
         anthropicApiKey: input.anthropicApiKey,
+        anthropicBaseUrl: input.anthropicBaseUrl,
       }),
       input.onLog,
     );

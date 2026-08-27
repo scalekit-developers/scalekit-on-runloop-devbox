@@ -5,6 +5,7 @@ export type AgentRun = {
   mcpUrl: string;
   sessionToken: string;
   anthropicApiKey: string;
+  anthropicBaseUrl?: string;
 };
 
 export function buildInstallScript(): string {
@@ -13,13 +14,15 @@ export function buildInstallScript(): string {
 
 export function buildClaudeScript(run: AgentRun): string {
   const mcpUrl = shellQuote(run.mcpUrl);
-  const anthropic = shellQuote(run.anthropicApiKey);
   const prompt = shellQuote(AGENT_PROMPT);
+  const modelEnv = run.anthropicBaseUrl
+    ? `ANTHROPIC_BASE_URL=${shellQuote(run.anthropicBaseUrl)} ANTHROPIC_AUTH_TOKEN=${shellQuote(run.anthropicApiKey)}`
+    : `ANTHROPIC_API_KEY=${shellQuote(run.anthropicApiKey)}`;
 
   return [
     'set -euo pipefail',
     `claude mcp add scalekit-virtual-mcp --transport http ${mcpUrl} --header ${shellQuote(`Authorization: Bearer ${run.sessionToken}`)}`,
-    `ANTHROPIC_API_KEY=${anthropic} claude -p ${prompt} --dangerously-skip-permissions`,
+    `${modelEnv} claude -p ${prompt} --dangerously-skip-permissions`,
   ].join('\n');
 }
 
