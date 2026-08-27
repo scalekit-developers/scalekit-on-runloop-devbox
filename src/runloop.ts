@@ -1,13 +1,12 @@
-import { RunloopSDK } from '@runloop/api-client';
-import { buildAgentScript } from './boxCommands.ts';
+import { RunloopSDK, type Devbox } from '@runloop/api-client';
+import { buildClaudeScript, buildInstallScript, type AgentRun } from './devboxCommands.ts';
 
-export async function runAgentInDevbox(input: {
-  runloopApiKey: string;
-  mcpUrl: string;
-  sessionToken: string;
-  anthropicApiKey: string;
-  onLog: (line: string) => void;
-}): Promise<string> {
+export async function runAgentInDevbox(
+  input: AgentRun & {
+    runloopApiKey: string;
+    onLog: (line: string) => void;
+  },
+): Promise<string> {
   const sdk = new RunloopSDK({ bearerToken: input.runloopApiKey });
   input.onLog('Creating Devbox…');
 
@@ -21,29 +20,37 @@ export async function runAgentInDevbox(input: {
 
   try {
     input.onLog(`Devbox ${devbox.id} is up. Installing Claude Code (this can take a few minutes)…`);
-    const script = buildAgentScript({
-      mcpUrl: input.mcpUrl,
-      sessionToken: input.sessionToken,
-      anthropicApiKey: input.anthropicApiKey,
-    });
+    await runScript(devbox, '/tmp/install-claude.sh', buildInstallScript(), input.onLog);
 
-    await devbox.file.write({
-      file_path: '/tmp/run-agent.sh',
-      contents: `${script}\n`,
-    });
-    const execution = await devbox.cmd.execAsync('bash /tmp/run-agent.sh', {
-      stdout: (line) => input.onLog(line),
-      stderr: (line) => input.onLog(line),
-    });
-    const result = await execution.result();
-    const stdout = (await result.stdout()).trim();
-    const stderr = (await result.stderr()).trim();
-    if (!result.success) {
-      throw new Error(stderr || stdout || `Claude Code exited ${result.exitCode}`);
-    }
-    return stdout;
+    input.onLog('Asking Claude Code for the last pull request…');
+    const result = await runScript(
+      devbox,
+      '/tmp/run-claude.sh',
+      buildClaudeScript({
+        mcpUrl: input.mcpUrl,
+        sessionToken: input.sessionToken,
+        anthropicApiKey: input.anthropicApiKey,
+      }),
+      input.onLog,
+    );
+    return (await result.stdout()).trim();
   } finally {
     input.onLog('Shutting down Devbox…');
     await devbox.shutdown().catch(() => undefined);
   }
+}
+
+async function runScript(devbox: Devbox, path: string, contents: string, onLog: (line: string) => void) {
+  await devbox.file.write({ file_path: path, contents: `${contents}\n` });
+  const execution = await devbox.cmd.execAsync(`bash ${path}`, {
+    stdout: (line) => onLog(line),
+    stderr: (line) => onLog(line),
+  });
+  const result = await execution.result();
+  if (!result.success) {
+    const stderr = (await result.stderr()).trim();
+    const stdout = (await result.stdout()).trim();
+    throw new Error(stderr || stdout || `Command exited ${result.exitCode}`);
+  }
+  return result;
 }

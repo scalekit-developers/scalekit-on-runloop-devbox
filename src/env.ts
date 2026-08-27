@@ -4,6 +4,7 @@ export type AppEnv = {
   scalekitClientId: string;
   scalekitClientSecret: string;
   scalekitMcpConfigId: string;
+  scalekitMcpServerUrl: string;
   githubConnectionName: string;
   demoIdentifier: string;
   runloopApiKey: string;
@@ -31,6 +32,7 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     scalekitClientId: source.SCALEKIT_CLIENT_ID!,
     scalekitClientSecret: source.SCALEKIT_CLIENT_SECRET!,
     scalekitMcpConfigId: source.SCALEKIT_MCP_CONFIG_ID!,
+    scalekitMcpServerUrl: source.SCALEKIT_MCP_SERVER_URL?.trim() || '',
     githubConnectionName: source.GITHUB_CONNECTION_NAME?.trim() || 'github-connect',
     demoIdentifier: source.DEMO_IDENTIFIER?.trim() || 'demo-user',
     runloopApiKey: source.RUNLOOP_API_KEY!,

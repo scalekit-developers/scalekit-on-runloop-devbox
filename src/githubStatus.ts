@@ -25,3 +25,10 @@ export function githubStatusFromAccounts(
   }
   return { state: 'missing' };
 }
+
+export function withAuthLink(status: GithubStatus, authLink: string): GithubStatus {
+  if (status.state === 'ready') {
+    return status;
+  }
+  return { state: 'needs_auth', authLink };
+}

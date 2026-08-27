@@ -71,13 +71,13 @@
         return;
       }
       runEl.disabled = true;
-      if (data.state === 'needs_auth' && data.authLink) {
+      if (data.authLink) {
         statusEl.textContent = 'GitHub needs authorization.';
         connectEl.hidden = false;
         connectEl.href = data.authLink;
         return;
       }
-      statusEl.textContent = 'No GitHub connected account. Check SCALEKIT_MCP_CONFIG_ID and GITHUB_CONNECTION_NAME.';
+      statusEl.textContent = 'GitHub is not ready and no Connect link came back. Check SCALEKIT_MCP_CONFIG_ID and GITHUB_CONNECTION_NAME.';
       connectEl.hidden = true;
     }
 

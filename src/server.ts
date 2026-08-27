@@ -3,9 +3,8 @@ import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadEnv } from './env.ts';
-import { githubStatusFromAccounts } from './githubStatus.ts';
 import { runAgentInDevbox } from './runloop.ts';
-import { createScalekit, listMcpConnectedAccounts, mintSessionToken } from './scalekit.ts';
+import { createScalekit, loadGithubStatus, mintSessionToken } from './scalekit.ts';
 
 loadDotenv();
 
@@ -18,8 +17,7 @@ app.use(express.static(path.join(here, '..', 'public')));
 
 app.get('/api/status', async (_req, res) => {
   try {
-    const accounts = await listMcpConnectedAccounts(env, scalekit);
-    const status = githubStatusFromAccounts(accounts, env.githubConnectionName);
+    const status = await loadGithubStatus(env, scalekit);
     res.json({ ...status, identifier: env.demoIdentifier, connectionName: env.githubConnectionName });
   } catch (error) {
     res.status(500).json({ error: messageOf(error) });
@@ -38,12 +36,14 @@ app.post('/api/run', async (_req, res) => {
 
   try {
     send({ type: 'log', text: 'Checking GitHub connected account…' });
-    const accounts = await listMcpConnectedAccounts(env, scalekit);
-    const status = githubStatusFromAccounts(accounts, env.githubConnectionName);
+    const status = await loadGithubStatus(env, scalekit);
     if (status.state !== 'ready') {
       send({
         type: 'error',
-        text: 'GitHub is not connected. Click Connect GitHub first.',
+        text:
+          status.state === 'needs_auth'
+            ? 'GitHub is not connected. Click Connect GitHub first.'
+            : 'GitHub is not connected. Refresh status, then click Connect GitHub.',
         status,
       });
       res.end();

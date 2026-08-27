@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { githubStatusFromAccounts } from './githubStatus.ts';
+import { githubStatusFromAccounts, withAuthLink } from './githubStatus.ts';
 
 describe('githubStatusFromAccounts', () => {
   it('is ready when the GitHub connected account is ACTIVE', () => {
@@ -28,5 +28,12 @@ describe('githubStatusFromAccounts', () => {
 
   it('is missing when no matching connected account exists', () => {
     expect(githubStatusFromAccounts([], 'github-connect')).toEqual({ state: 'missing' });
+  });
+
+  it('turns missing into needs_auth when an auth link is supplied', () => {
+    expect(withAuthLink({ state: 'missing' }, 'https://auth.example/github')).toEqual({
+      state: 'needs_auth',
+      authLink: 'https://auth.example/github',
+    });
   });
 });
