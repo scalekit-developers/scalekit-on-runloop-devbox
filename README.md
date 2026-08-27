@@ -2,6 +2,8 @@
 
 Local demo: a user connects GitHub with Scalekit. A Runloop Devbox runs Claude Code. Claude Code calls Scalekit Virtual MCP. There is no MCP Hub.
 
+**Setup and test steps:** [cookbook.md](./cookbook.md).
+
 See `CONTEXT.md` and `docs/adr/0001-skip-mcp-hub.md`.
 
 ## Once in the dashboards
