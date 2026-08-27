@@ -18,6 +18,8 @@ Skip this repo if you only have a shared PAT. Use [Runloop’s MCP Hub example](
 
 Scalekit Virtual MCP is the door. A short session token is the key. Claude Code calls the Virtual MCP URL with `Authorization: Bearer <token>`.
 
+![Local demo page with GitHub connected and a run in progress](docs/images/demo-connected.png)
+
 ## Quick start
 
 You need Node.js 22+, a Scalekit environment, a Runloop API key, and a LiteLLM host **or** an Anthropic API key.
@@ -70,6 +72,10 @@ Open [http://localhost:3456](http://localhost:3456). Connect GitHub. Refresh sta
 | Shut down the Devbox | Runloop |
 
 MCP Hub is not used. See `docs/adr/0001-skip-mcp-hub.md`.
+
+The same run on the Runloop dashboard. The Devbox installs Claude Code, registers Virtual MCP, prints the PR summary, then shuts down.
+
+![Runloop Devbox after a successful run, with the PR summary in the command log](docs/images/runloop-devbox.png)
 
 ## Which SDKs this demo uses
 
