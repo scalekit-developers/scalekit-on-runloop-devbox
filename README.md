@@ -79,7 +79,3 @@ MCP Hub is not used. See `docs/adr/0001-skip-mcp-hub.md`.
 | `@scalekit-sdk/node` | Management token and the Connect GitHub link |
 
 Session token mint and connected-account list use REST (`POST /api/v1/mcp/configs/{id}/tokens`). The Node SDK does not expose `create_session_token` yet.
-
-## License
-
-See the repository. Treat this as an example, not a production service.
