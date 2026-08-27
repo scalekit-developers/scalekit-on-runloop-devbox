@@ -40,6 +40,8 @@ describe('buildClaudeScript', () => {
     expect(script).not.toContain('how you collected');
     expect(script).not.toContain('npm install');
     expect(script).toContain("--model 'claude-sonnet-4-6'");
+    expect(script).toContain("ANTHROPIC_DEFAULT_OPUS_MODEL='claude-opus-4-6'");
+    expect(script).not.toContain('claude-opus-5');
   });
 });
 

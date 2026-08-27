@@ -53,6 +53,7 @@ app.post('/api/run', async (_req, res) => {
     send({ type: 'log', text: 'Minting a Scalekit session token…' });
     const { token, mcpServerUrl } = await mintSessionToken(env, scalekit);
     send({ type: 'log', text: `Virtual MCP: ${mcpServerUrl}` });
+    send({ type: 'log', text: `Claude model: ${env.model}` });
 
     const summary = await runAgentInDevbox({
       runloopApiKey: env.runloopApiKey,
