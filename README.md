@@ -2,6 +2,8 @@
 
 Run any [Scalekit](https://www.scalekit.com) AgentKit connector inside a [Runloop](https://runloop.ai) Devbox. The user authorizes GitHub once. The agent summarizes **their** last pull request (PR). The Devbox never holds a GitHub personal access token (PAT).
 
+Scalekit provides auth and actions on behalf of users, with 500+ connectors and 20,000+ tools.
+
 **Full steps:** [cookbook.md](./cookbook.md)
 
 ## Use this repo when
